@@ -18,6 +18,7 @@ extension Date {
     }
 
 
+
     var endOfMonth: Date {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = TimeZone(identifier: "Asia/Seoul")!
@@ -70,11 +71,14 @@ extension Date {
         self.formatted(.dateTime.month(.wide))
     }
     
+
     var startOfCalendarWithPrefixDays: Date {
-        let calendar = Calendar(identifier: .gregorian)
-        let startOfMonthWeekday = calendar.component(.weekday, from: self.startOfMonth)
-        let numberOfPrefixDays = startOfMonthWeekday - 1
-        let startDate = calendar.date(byAdding: .day, value: -startOfMonthWeekday, to: startOfMonth)!
-        return startDate
-    }
+         let calendar = Calendar(identifier: .gregorian)
+         let startOfMonthWeekday = calendar.component(.weekday, from: self.startOfMonth)
+         let numberOfPrefixDays = startOfMonthWeekday - 1
+         let startDate = calendar.date(byAdding: .day, value: -startOfMonthWeekday, to: startOfMonth)!
+         return startDate
+     }
+
+
 }
