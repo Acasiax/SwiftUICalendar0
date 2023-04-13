@@ -14,8 +14,8 @@ struct StreakView: View {
         sortDescriptors: [NSSortDescriptor(keyPath: \Day.date, ascending: true)],
         predicate: NSPredicate(format: "(date >= %@) AND (date <= %@)",
                                //⭐️
-                               Date().startOfCalendarWithPrefixDays as CVarArg,
-                               //Date().startOfMonth as CVarArg,
+                               //Date().startOfCalendarWithPrefixDays as CVarArg,
+                               Date().startOfMonth as CVarArg,
                                Date().endOfMonth as CVarArg))
     private var days: FetchedResults<Day>
     

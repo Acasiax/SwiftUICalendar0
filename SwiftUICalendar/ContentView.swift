@@ -13,7 +13,7 @@ struct CalendarView: View {
     private var calendar: Calendar
     private var today: Date
     private var startOfMonth: Date
-
+    
     init() {
         var calendar = Calendar(identifier: .gregorian)
         calendar.locale = Locale(identifier: "ko_KR")
@@ -35,49 +35,53 @@ struct CalendarView: View {
         }
         self.startOfMonth = date
     }
-
-
-
+    
+    
+    
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Day.date, ascending: true)],
         predicate: NSPredicate(format: "(date >= %@) AND (date <= %@)",
                                //⭐️
                                Date().startOfCalendarWithPrefixDays as CVarArg,
-                              // Date().startOfMonth as CVarArg,
+                               // Date().startOfMonth as CVarArg,
                                Date().endOfMonth as CVarArg))
     private var days: FetchedResults<Day>
-
-
+    
+    
     private func fetchRequest() -> NSFetchRequest<Day> {
         let request = NSFetchRequest<Day>(entityName: "Day")
         request.sortDescriptors = [NSSortDescriptor(keyPath: \Day.date, ascending: true)]
         request.predicate = NSPredicate(format: "(date >= %@) AND (date <= %@)", Date().startOfMonth as CVarArg, Date().endOfMonth as CVarArg)
         return request
     }
-
-
-
+    
+    
+    
     
     let dayOfWeek = ["일", "월", "화", "수", "목", "금", "토"]
-       private let dateFormatter: DateFormatter = {
-           let formatter = DateFormatter()
-           formatter.dateFormat = "d"
-           formatter.locale = Locale(identifier: "ko_KR")
-           formatter.timeZone = TimeZone(identifier: "Asia/Seoul")
-           return formatter
-       }()
+    private let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "d"
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.timeZone = TimeZone(identifier: "Asia/Seoul")
+        return formatter
+    }()
+    
+    @State private var safeAreaInsets = EdgeInsets()
 
     var body: some View {
         NavigationView {
             VStack {
+       
+                
+                // HStack에 이전 월, 다음 월 버튼을 추가합니다.
                 HStack {
-                    Text(Date().formatted(.dateTime.month(.wide)))
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .padding()
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                 
                 }
-                HStack {
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                
+                // 나머지 내용은 그대로 유지합니다.
+                HStack(spacing: 0) {
                     ForEach(dayOfWeek, id: \.self) { dayOfWeek in
                         Text(dayOfWeek)
                             .fontWeight(.black)
@@ -85,6 +89,9 @@ struct CalendarView: View {
                             .frame(maxWidth: .infinity)
                     }
                 }
+                //.padding(.bottom, 10)
+                .padding(.top, -140) // 요일 배열이 월 아래에 위치하도록 top padding을 추가
+                Spacer()
                 ScrollView {
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
                         ForEach(days){ day in
@@ -116,43 +123,60 @@ struct CalendarView: View {
                         }
                     }
                 }
+                .navigationBarTitleDisplayMode(.inline)
             }
-            .navigationBarTitleDisplayMode(.inline)
-            
-            .navigationTitle(Date().formatted(.dateTime.month(.wide)))
-            .padding()
-            .onAppear {
-                if days.isEmpty {
-                    creatMonthDays(for: .now.startOfPreviousMonth)
-                    creatMonthDays(for: .now)
-                } else if days.count < 10 {
-                    creatMonthDays(for: .now)
+            .edgesIgnoringSafeArea(.bottom)
+            // title 앞뒤에 버튼이 추가된 NavigationView 입니다.
+            // .navigationTitle("") // title을 빈 값으로 설정
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    HStack {
+                        Button(action: {
+                            // 이전 월로 이동하는 코드
+                        }, label: {
+                            Image(systemName: "chevron.left")
+                                .font(.title2)
+                        })
+                        
+                        Text(Date().formatted(.dateTime.month(.wide)))
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                            .padding(10)
+                        
+                        Button(action: {
+                            // 다음 월로 이동하는 코드
+                        }, label: {
+                            Image(systemName: "chevron.right")
+                                .font(.title2)
+                        })
+                    }
                 }
             }
         }
     }
-
-    
-    func creatMonthDays(for date: Date){
         
-        for dayOffset in 0..<date.numberOfDaysInMonth{
-            let newDay = Day(context: viewContext)
-            newDay.date = Calendar.current.date(byAdding: .day, value: dayOffset, to: date.startOfMonth)
+        
+        func creatMonthDays(for date: Date){
             
-            newDay.didStudy = false
+            for dayOffset in 0..<date.numberOfDaysInMonth{
+                let newDay = Day(context: viewContext)
+                newDay.date = Calendar.current.date(byAdding: .day, value: dayOffset, to: date.startOfMonth)
+                
+                newDay.didStudy = false
+            }
+            
         }
+        
     
-    }
     
-}
     
-
-
-
-
-struct ContentView_Previewss: PreviewProvider {
-    static var previews: some View {
-        CalendarView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+    
+    
+    
+    struct ContentView_Previewss: PreviewProvider {
+        static var previews: some View {
+            CalendarView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        }
     }
 }
 

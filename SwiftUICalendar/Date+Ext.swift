@@ -10,11 +10,22 @@ import Foundation
 extension Date {
 
 
+//    var startOfMonth: Date {
+//        var calendar = Calendar(identifier: .gregorian)
+//        calendar.timeZone = TimeZone(identifier: "Asia/Seoul")!
+//        let components = calendar.dateComponents([.year, .month], from: self)
+//        return calendar.date(from: components)!
+//    }
+    
     var startOfMonth: Date {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = TimeZone(identifier: "Asia/Seoul")!
         let components = calendar.dateComponents([.year, .month], from: self)
-        return calendar.date(from: components)!
+        let startOfMonth = calendar.date(from: components)!
+        let startOfMonthWeekday = calendar.component(.weekday, from: startOfMonth)
+        let numberOfPrefixDays = startOfMonthWeekday - 1
+        let startDate = calendar.date(byAdding: .day, value: -numberOfPrefixDays, to: startOfMonth)!
+        return startDate
     }
 
 
