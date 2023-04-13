@@ -72,13 +72,33 @@ struct CalendarView: View {
     var body: some View {
         NavigationView {
             VStack {
-       
+                // title 앞뒤에 버튼이 추가된 NavigationView 입니다.
+                // .navigationTitle("") // title을 빈 값으로 설정
                 
                 // HStack에 이전 월, 다음 월 버튼을 추가합니다.
                 HStack {
-                 
+                    Button(action: {
+                        // 이전 월로 이동하는 코드
+                    }, label: {
+                        Image(systemName: "chevron.left")
+                            .font(.title2)
+                    })
+                    Spacer()
+                    Text(Date().formatted(.dateTime.month(.wide)))
+                        .font(.largeTitle)
+                        .fontWeight(.semibold)
+                        .padding(25)
+                    
+                    Spacer()
+                    Button(action: {
+                        // 다음 월로 이동하는 코드
+                    }, label: {
+                        Image(systemName: "chevron.right")
+                            .font(.title2)
+                    })
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                .padding(.horizontal)
+                .padding(.top, 20)
                 
                 // 나머지 내용은 그대로 유지합니다.
                 HStack(spacing: 0) {
@@ -89,8 +109,8 @@ struct CalendarView: View {
                             .frame(maxWidth: .infinity)
                     }
                 }
-                //.padding(.bottom, 10)
-                .padding(.top, -140) // 요일 배열이 월 아래에 위치하도록 top padding을 추가
+                .padding(.bottom, 10)
+                .padding(.top, -10) // 요일 배열이 월 아래에 위치하도록 top padding을 추가
                 Spacer()
                 ScrollView {
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
@@ -124,34 +144,35 @@ struct CalendarView: View {
                     }
                 }
                 .navigationBarTitleDisplayMode(.inline)
+            
             }
             .edgesIgnoringSafeArea(.bottom)
             // title 앞뒤에 버튼이 추가된 NavigationView 입니다.
             // .navigationTitle("") // title을 빈 값으로 설정
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    HStack {
-                        Button(action: {
-                            // 이전 월로 이동하는 코드
-                        }, label: {
-                            Image(systemName: "chevron.left")
-                                .font(.title2)
-                        })
-                        
-                        Text(Date().formatted(.dateTime.month(.wide)))
-                            .font(.largeTitle)
-                            .fontWeight(.bold)
-                            .padding(10)
-                        
-                        Button(action: {
-                            // 다음 월로 이동하는 코드
-                        }, label: {
-                            Image(systemName: "chevron.right")
-                                .font(.title2)
-                        })
-                    }
-                }
-            }
+//            .toolbar {
+//                ToolbarItem(placement: .principal) {
+//                    HStack {
+//                        Button(action: {
+//                            // 이전 월로 이동하는 코드
+//                        }, label: {
+//                            Image(systemName: "chevron.left")
+//                                .font(.title2)
+//                        })
+//
+//                        Text(Date().formatted(.dateTime.month(.wide)))
+//                            .font(.largeTitle)
+//                            .fontWeight(.bold)
+//                            .padding(10)
+//
+//                        Button(action: {
+//                            // 다음 월로 이동하는 코드
+//                        }, label: {
+//                            Image(systemName: "chevron.right")
+//                                .font(.title2)
+//                        })
+//                    }
+//                }
+//            }
         }
     }
         
