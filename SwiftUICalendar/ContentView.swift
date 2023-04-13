@@ -9,6 +9,7 @@ import SwiftUI
 import CoreData
 
 struct CalendarView: View {
+    @State public var date = Date()
     @Environment(\.managedObjectContext) private var viewContext
     private var calendar: Calendar
     private var today: Date
@@ -68,35 +69,40 @@ struct CalendarView: View {
     }()
     
     @State private var safeAreaInsets = EdgeInsets()
-
+    @State private var currentDate = Date()
+    
     var body: some View {
         NavigationView {
             VStack {
-                // title 앞뒤에 버튼이 추가된 NavigationView 입니다.
-                // .navigationTitle("") // title을 빈 값으로 설정
                 
                 // HStack에 이전 월, 다음 월 버튼을 추가합니다.
+
                 HStack {
-                    Button(action: {
-                        // 이전 월로 이동하는 코드
-                    }, label: {
-                        Image(systemName: "chevron.left")
-                            .font(.title2)
-                    })
                     Spacer()
-                    Text(Date().formatted(.dateTime.month(.wide)))
-                        .font(.largeTitle)
-                        .fontWeight(.semibold)
-                        .padding(25)
-                    
+                    Button(action: { date = date.minusMonth(1) })
+                    {
+                        Image(systemName: "arrow.left")
+                            .imageScale(.large)
+                            .font(Font.title.weight(.bold))
+                    }
+                    Text(date.monthYearString())
+                        .font(.title)
+                        .bold()
+                        .animation(.none)
+                        .frame(maxWidth: .infinity)
+                    Button(action: { date = date.plusMonth(1) })
+                    {
+                        Image(systemName: "arrow.right")
+                            .imageScale(.large)
+                            .font(Font.title.weight(.bold))
+                    }
                     Spacer()
-                    Button(action: {
-                        // 다음 월로 이동하는 코드
-                    }, label: {
-                        Image(systemName: "chevron.right")
-                            .font(.title2)
-                    })
                 }
+
+                
+                
+                
+                
                 .padding(.horizontal)
                 .padding(.top, 20)
                 
@@ -144,52 +150,27 @@ struct CalendarView: View {
                     }
                 }
                 .navigationBarTitleDisplayMode(.inline)
-            
+                
             }
             .edgesIgnoringSafeArea(.bottom)
-            // title 앞뒤에 버튼이 추가된 NavigationView 입니다.
-            // .navigationTitle("") // title을 빈 값으로 설정
-//            .toolbar {
-//                ToolbarItem(placement: .principal) {
-//                    HStack {
-//                        Button(action: {
-//                            // 이전 월로 이동하는 코드
-//                        }, label: {
-//                            Image(systemName: "chevron.left")
-//                                .font(.title2)
-//                        })
-//
-//                        Text(Date().formatted(.dateTime.month(.wide)))
-//                            .font(.largeTitle)
-//                            .fontWeight(.bold)
-//                            .padding(10)
-//
-//                        Button(action: {
-//                            // 다음 월로 이동하는 코드
-//                        }, label: {
-//                            Image(systemName: "chevron.right")
-//                                .font(.title2)
-//                        })
-//                    }
-//                }
-//            }
         }
     }
+    
+    
+    func creatMonthDays(for date: Date){
         
-        
-        func creatMonthDays(for date: Date){
+        for dayOffset in 0..<date.numberOfDaysInMonth{
+            let newDay = Day(context: viewContext)
+            newDay.date = Calendar.current.date(byAdding: .day, value: dayOffset, to: date.startOfMonth)
             
-            for dayOffset in 0..<date.numberOfDaysInMonth{
-                let newDay = Day(context: viewContext)
-                newDay.date = Calendar.current.date(byAdding: .day, value: dayOffset, to: date.startOfMonth)
-                
-                newDay.didStudy = false
-            }
-            
+            newDay.didStudy = false
         }
         
+    }
     
+}
     
+  
     
     
     
@@ -199,5 +180,5 @@ struct CalendarView: View {
             CalendarView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
         }
     }
-}
+
 

@@ -16,6 +16,12 @@ extension Date {
 //        let components = calendar.dateComponents([.year, .month], from: self)
 //        return calendar.date(from: components)!
 //    }
+    func monthYearString() -> String {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy MMMM"
+            return dateFormatter.string(from: self)
+        }
+
     
     var startOfMonth: Date {
         var calendar = Calendar(identifier: .gregorian)
@@ -53,16 +59,17 @@ extension Date {
         }
         return self
     }
+
     
-    var startOfPreviousMonth: Date {
-        let dayInPreviousMonth = Calendar.current.date(byAdding: .month, value: -1, to: self)!
-        return dayInPreviousMonth.startOfMonth
-    }
+
     
-    var startOfNextMonth: Date {
-        let dayInNextMonth = Calendar.current.date(byAdding: .month, value: 1, to: self)!
-        return dayInNextMonth.startOfMonth
-    }
+//    var startOfNextMonth: Date? {
+//        guard let dayInNextMonth = Calendar.current.date(byAdding: .month, value: 1, to: self) else {
+//            return nil
+//        }
+//        return dayInNextMonth.startOfMonth
+//    }
+
     
     var numberOfDaysInMonth: Int {
         let calendar = Calendar(identifier: .gregorian)
@@ -91,5 +98,48 @@ extension Date {
          return startDate
      }
 
-
+ 
+       
+    func minusMonth(_ months: Int) -> Date {
+           var components = DateComponents()
+           components.month = -months
+           return Calendar.current.date(byAdding: components, to: self)!
+       }
+       
+       func plusMonth(_ months: Int) -> Date {
+           var components = DateComponents()
+           components.month = months
+           return Calendar.current.date(byAdding: components, to: self)!
+       }
+       
+       
+       func daysInMonth(_ date: Date) -> Int
+       {
+           let calendar = Calendar(identifier: .gregorian)
+           let range = calendar.range(of: .day, in: .month, for: date)!
+           return range.count
+       }
+       
+       func dayOfMonth(_ date: Date) -> Int
+       {
+           let calendar = Calendar(identifier: .gregorian)
+           let components = calendar.dateComponents([.day], from: date)
+           return components.day!
+       }
+       
+       func firstOfMonth(_ date: Date) -> Date
+       {
+           let calendar = Calendar(identifier: .gregorian)
+           let components = calendar.dateComponents([.year, .month], from: date)
+           return calendar.date(from: components)!
+       }
+       
+       func weekDay(_ date: Date) -> Int
+       {
+           let calendar = Calendar(identifier: .gregorian)
+           let components = calendar.dateComponents([.weekday], from: date)
+           return components.weekday! - 1
+       }
+    
+   
 }
